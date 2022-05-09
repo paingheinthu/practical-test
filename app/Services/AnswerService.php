@@ -3,11 +3,9 @@
 namespace App\Services;
 
 use App\Models\Answer;
-use App\Contracts\AnswerInterface;
 use App\Models\Survey;
 use App\Models\Question;
-use App\Models\User;
-use Illuminate\Database\Eloquent\Collection;
+use App\Contracts\AnswerInterface;
 
 class AnswerService implements AnswerInterface
 {

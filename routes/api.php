@@ -40,7 +40,7 @@ Route::group(
             ],
 
             function () {
-                Route::resource('survey', SurveyController::class)->only(['store', 'show']);
+                Route::resource('survey', SurveyController::class)->only(['store', 'show', 'index']);
                 Route::put('survey/{id}/disable', [SurveyController::class, 'disable']);
                 Route::post('survey/question/attach', [SurveyController::class, 'attachQuestion']);
 

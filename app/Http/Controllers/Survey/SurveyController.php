@@ -16,6 +16,15 @@ class SurveyController extends Controller
     ) {
     }
 
+    public function index()
+    {
+        return response()->json(
+            [
+                'data' => $this->survey->getActiveSurvey()
+            ]
+        );
+    }
+
     public function store(Request $request)
     {
         $validator = Validator::make(
