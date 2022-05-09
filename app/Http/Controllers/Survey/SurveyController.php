@@ -52,7 +52,7 @@ class SurveyController extends Controller
         if ($survey = $this->surveyService->getSurveyQuestions($id)) {
             return response()->json(
                 [
-                    'data' => $this->surveyService->getSurveyQuestions($id)
+                    'data' => $survey
                 ]
             );
         }
@@ -68,6 +68,14 @@ class SurveyController extends Controller
     public function disable(int $id)
     {
         if ($survey = $this->surveyService->getSurvey($id)) {
+            if ($survey->status == false) {
+                return response()->json(
+                    [
+                        'message' => 'already disable your survey'
+                    ],
+                );
+            }
+
             $res = $this->surveyService->disableSurvey($survey);
             return response()->json(
                 [

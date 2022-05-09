@@ -27,7 +27,7 @@ Route::group(
             ],
             function () {
                 Route::resource('/register', UserController::class)->only(['store']);
-                Route::post('/login', [UserController::class, 'login']);
+                Route::post('/login', [UserController::class, 'login'])->name('login');
             }
         );
 
