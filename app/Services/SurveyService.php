@@ -3,13 +3,17 @@
 namespace App\Services;
 
 use App\Models\Survey;
+use App\Models\Question;
 use App\Contracts\SurveyInterface;
+use Illuminate\Support\Facades\Log;
+use App\Contracts\QuestionInterface;
 use Illuminate\Database\Eloquent\Collection;
 
 class SurveyService implements SurveyInterface
 {
-    public function __construct(protected Survey $survey)
-    {
+    public function __construct(
+        protected Survey $survey
+    ) {
     }
 
     public function createSurvey(string $title, string $description = ""): ?Survey
@@ -50,5 +54,19 @@ class SurveyService implements SurveyInterface
             ->active()
             ->with('questions')
             ->get();
+    }
+
+    public function attachQuestion(Survey $survey, Question $question): ?Collection
+    {
+        try {
+            $survey->questions()->attach($question);
+            $survey->refresh();
+            return $survey->questions;
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+            return null;
+        }
+
+        return null;
     }
 }

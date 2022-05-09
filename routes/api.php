@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Survey\QuestionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Survey\SurveyController;
@@ -40,6 +41,9 @@ Route::group(
             function () {
                 Route::resource('survey', SurveyController::class)->only(['store', 'show']);
                 Route::put('survey/{id}/disable', [SurveyController::class, 'disable']);
+                Route::post('survey/question/attach', [SurveyController::class, 'attachQuestion']);
+
+                Route::resource('question', QuestionController::class)->only(['store']);
             }
 
         );

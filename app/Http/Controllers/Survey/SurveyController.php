@@ -3,14 +3,17 @@
 namespace App\Http\Controllers\Survey;
 
 use Illuminate\Http\Request;
-use App\Contracts\SurveyInterface;
+use App\Services\SurveyService;
+use App\Services\QuestionService;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class SurveyController extends Controller
 {
-    public function __construct(protected SurveyInterface $surveyService)
-    {
+    public function __construct(
+        protected SurveyService $survey,
+        protected QuestionService $question
+    ) {
     }
 
     public function store(Request $request)
@@ -18,7 +21,7 @@ class SurveyController extends Controller
         $validator = Validator::make(
             $request->all(),
             [
-                "title" => 'required'
+                'title' => 'required'
             ]
         );
 
@@ -31,7 +34,7 @@ class SurveyController extends Controller
             );
         }
 
-        if ($survey = $this->surveyService->createSurvey($request->title, $request->get('description') ?: '')) {
+        if ($survey = $this->survey->createSurvey($request->title, $request->get('description') ?: '')) {
             return response()->json(
                 [
                     'data' => $survey
@@ -49,7 +52,7 @@ class SurveyController extends Controller
 
     public function show(int $id)
     {
-        if ($survey = $this->surveyService->getSurveyQuestions($id)) {
+        if ($survey = $this->survey->getSurveyQuestions($id)) {
             return response()->json(
                 [
                     'data' => $survey
@@ -67,7 +70,7 @@ class SurveyController extends Controller
 
     public function disable(int $id)
     {
-        if ($survey = $this->surveyService->getSurvey($id)) {
+        if ($survey = $this->survey->getSurvey($id)) {
             if ($survey->status == false) {
                 return response()->json(
                     [
@@ -76,7 +79,7 @@ class SurveyController extends Controller
                 );
             }
 
-            $res = $this->surveyService->disableSurvey($survey);
+            $res = $this->survey->disableSurvey($survey);
             return response()->json(
                 [
                     'message' => $res ? 'successfully disable survey' : 'can not disable'
@@ -90,6 +93,61 @@ class SurveyController extends Controller
                 'message' => 'survey not found',
             ],
             404
+        );
+    }
+
+    public function attachQuestion(Request $request)
+    {
+        $validator = Validator::make(
+            $request->all(),
+            [
+                'survey_id' => 'required|int',
+                'question_id' => 'required|int'
+            ]
+        );
+
+        if ($validator->fails()) {
+            return response()->json(
+                [
+                    'message' => $validator->errors()
+                ],
+                422
+            );
+        }
+
+        $survey = $this->survey->getSurvey($request->survey_id);
+        if (!$survey) {
+            return response()->json(
+                [
+                    'message' => 'survey not found'
+                ],
+                404
+            );
+        }
+
+        $question = $this->question->getQuestion($request->question_id);
+        if (!$question) {
+            return response()->json(
+                [
+                    'message' => 'question not found'
+                ],
+                404
+            );
+        }
+
+        if ($attach = $this->survey->attachQuestion($survey, $question)) {
+            return response()->json(
+                [
+                    'data' => $attach
+                ]
+            );
+        }
+
+        return response()->json(
+            [
+                'message' => 'can not attach the question to survey'
+            ],
+            406
         );
     }
 }

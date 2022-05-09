@@ -17,7 +17,7 @@ return new class extends Migration
             $table->bigIncrements('id');
             $table->string('title');
             $table->string('type');
-            $table->tinyInteger('is_required', 0);
+            $table->tinyInteger('is_required')->default(0);
             $table->timestamps();
             $table->index('title');
         });
