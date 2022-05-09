@@ -29,6 +29,14 @@ class SurveyService implements SurveyInterface
             ->first();
     }
 
+    public function getSurveyQuestions(int $surveyId): ?Survey
+    {
+        return $this->survey
+            ->where('id', $surveyId)
+            ->with('questions')
+            ->first();
+    }
+
     public function disableSurvey(Survey $survey): bool
     {
         return $survey->update([
@@ -40,6 +48,7 @@ class SurveyService implements SurveyInterface
     {
         return $this->survey
             ->active()
+            ->with('questions')
             ->get();
     }
 }
