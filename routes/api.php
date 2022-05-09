@@ -1,9 +1,10 @@
 <?php
 
-use App\Http\Controllers\Survey\QuestionController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Survey\AnswerController;
 use App\Http\Controllers\Survey\SurveyController;
+use App\Http\Controllers\Survey\QuestionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -44,12 +45,9 @@ Route::group(
                 Route::post('survey/question/attach', [SurveyController::class, 'attachQuestion']);
 
                 Route::resource('question', QuestionController::class)->only(['store']);
+
+                Route::post('survey/answer', [AnswerController::class, 'store']);
             }
-
         );
-
-        // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-        //     return $request->user();
-        // });
     }
 );
