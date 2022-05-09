@@ -24,11 +24,13 @@ class SendMail
         return $next($request);
     }
 
-    public function terminate()
+    public function terminate($request, $response)
     {
-        if ($user = $this->user->where('id', auth()->id())->first()) {
-            $message = 'well receive your submitted';
-            event(new SendMailEvent($user?->email, $message));
+        if ($response->getStatusCode() == 200) {
+            if ($user = $this->user->where('id', auth()->id())->first()) {
+                $message = 'well receive your submitted';
+                event(new SendMailEvent($user?->email, $message));
+            }
         }
     }
 }

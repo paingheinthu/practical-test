@@ -3,6 +3,7 @@
 namespace App\Listeners;
 
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
@@ -33,7 +34,14 @@ class SendMailListener
         $email = $event->email;
         $message = $event->message;
         Log::debug($email . " " . $message);
-        // Mail::raw($message, function ($message) use ($email) {
-        // });
+        try {
+            Mail::raw($message, function ($message) use ($email) {
+                $message->from(config('mail.from.address'))
+                    ->subject("survey practical test")
+                    ->to($email);
+            });
+        } catch (\Exception $e) {
+            Log::error($e->getMessage());
+        }
     }
 }
