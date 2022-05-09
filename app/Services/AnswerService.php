@@ -11,8 +11,9 @@ use Illuminate\Database\Eloquent\Collection;
 
 class AnswerService implements AnswerInterface
 {
-    public function __construct(protected Answer $answer)
-    {
+    public function __construct(
+        protected Answer $answer
+    ) {
     }
 
     public function createAnswer(Survey $survey, Question $question, $authUserId, string $answer): ?Answer
@@ -28,13 +29,12 @@ class AnswerService implements AnswerInterface
             );
     }
 
-    public function getUserAnswers(User $user): ?Collection
+    public function checkAnswer(int $userId, int $surveyId, int $questionId): ?Answer
     {
-        return $user->answers;
-    }
-
-    public function getSurveyAnswers(Survey $survey): ?Collection
-    {
-        return $survey->answers;
+        return $this->answer
+            ->where('user_id', $userId)
+            ->where('survey_id', $surveyId)
+            ->where('question_id', $questionId)
+            ->first();
     }
 }

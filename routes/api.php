@@ -46,7 +46,7 @@ Route::group(
 
                 Route::resource('question', QuestionController::class)->only(['store']);
 
-                Route::post('survey/answer', [AnswerController::class, 'store']);
+                Route::post('survey/answer', [AnswerController::class, 'store'])->middleware('send.mail');
             }
         );
     }

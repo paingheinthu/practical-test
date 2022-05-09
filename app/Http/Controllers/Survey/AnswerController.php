@@ -67,6 +67,15 @@ class AnswerController extends Controller
             );
         }
 
+        if ($this->answer->checkAnswer(auth()->id(), $survey->id, $question->id)) {
+            return response()->json(
+                [
+                    'message' => 'already submitted'
+                ],
+                406
+            );
+        }
+
         if ($answer = $this->answer->createAnswer($survey, $question, auth()->id(), $request->answer)) {
             return response()->json(
                 [
