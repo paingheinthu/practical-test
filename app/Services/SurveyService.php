@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Survey;
 use App\Contracts\SurveyInterface;
+use Illuminate\Database\Eloquent\Collection;
 
 class SurveyService implements SurveyInterface
 {
@@ -33,5 +34,12 @@ class SurveyService implements SurveyInterface
         return $survey->update([
             'status' => 0,
         ]);
+    }
+
+    public function getActiveSurvey(): ?Collection
+    {
+        return $this->survey
+            ->active()
+            ->get();
     }
 }

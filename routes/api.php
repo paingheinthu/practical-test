@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\User\UserController;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\User\UserController;
+use App\Http\Controllers\Survey\SurveyController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,19 +17,31 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(
     [
-        'prefix' => 'v1/',
+        'prefix' => 'v1',
     ],
     function () {
         //grouping of user related api
         Route::group(
             [
-                'prefix' => 'user/',
-                'namespace' => 'App\Http\Controllers\User'
+                'prefix' => '/user'
             ],
             function () {
-                Route::resource('register', UserController::class)->only(['store']);
-                Route::post('login', [UserController::class, 'login']);
+                Route::resource('/register', UserController::class)->only(['store']);
+                Route::post('/login', [UserController::class, 'login']);
             }
+        );
+
+        //grouping of user related api
+        Route::group(
+            [
+                'middleware' => 'auth:sanctum'
+            ],
+
+            function () {
+                Route::resource('survey', SurveyController::class)->only(['store', 'show']);
+                Route::put('survey/{id}/disable', [SurveyController::class, 'disable']);
+            }
+
         );
 
         // Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
