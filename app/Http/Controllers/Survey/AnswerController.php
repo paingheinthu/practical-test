@@ -38,7 +38,7 @@ class AnswerController extends Controller
             );
         }
 
-        $survey = $this->survey->getSurvey($request->survey_id);
+        $survey = $this->survey->getSurveyQuestions($request->survey_id);
         if (!$survey) {
             return response()->json(
                 [
@@ -48,20 +48,11 @@ class AnswerController extends Controller
             );
         }
 
-        $question = $this->question->getQuestion($request->question_id);
+        $question = $survey->questions->firstWhere('id', $request->question_id);
         if (!$question) {
             return response()->json(
                 [
-                    'message' => 'question not found'
-                ],
-                404
-            );
-        }
-
-        if (!$survey->questions->firstWhere('id', $question->id)) {
-            return response()->json(
-                [
-                    'message' => $question?->title . ' is not include in survey ' . $survey?->title,
+                    'message' => 'question is not include in survey ' . $survey?->title,
                 ],
                 404
             );
