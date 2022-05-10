@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Report\ReportController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\User\UserController;
 use App\Http\Controllers\Survey\AnswerController;
@@ -47,6 +48,16 @@ Route::group(
                 Route::resource('question', QuestionController::class)->only(['store']);
 
                 Route::post('survey/answer', [AnswerController::class, 'store'])->middleware('send.mail');
+
+                Route::group(
+                    [
+                        'prefix' => 'report'
+                    ],
+                    function () {
+                        Route::get('survey/{id}/answers', [ReportController::class, 'reportSurveySummary']);
+                        Route::get('user/{id}/answers', [ReportController::class, 'reportUserSummary']);
+                    }
+                );
             }
         );
     }

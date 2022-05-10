@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Survey;
 
-use App\Constants\AllowTypes;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
+use App\Constants\AllowTypes;
 use App\Services\QuestionService;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 
 class QuestionController extends Controller

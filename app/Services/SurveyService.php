@@ -2,17 +2,19 @@
 
 namespace App\Services;
 
+use App\Models\Answer;
 use App\Models\Survey;
 use App\Models\Question;
 use App\Contracts\SurveyInterface;
 use Illuminate\Support\Facades\Log;
-use App\Contracts\QuestionInterface;
 use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 class SurveyService implements SurveyInterface
 {
     public function __construct(
-        protected Survey $survey
+        protected Survey $survey,
+        protected Answer $answer
     ) {
     }
 
@@ -68,5 +70,21 @@ class SurveyService implements SurveyInterface
         }
 
         return null;
+    }
+
+    public function getSurveyAnswerReport(int $surveyId, int $limit = 10): ?LengthAwarePaginator
+    {
+        return $this->answer
+            ->with(['question:id,title', 'survey:id,title'])
+            ->where('survey_id', $surveyId)
+            ->paginate($limit);
+    }
+
+    public function getUserAllSubmitted(int $userId, int $limit = 10): ?LengthAwarePaginator
+    {
+        return $this->answer
+            ->with(['user:id,name', 'survey:id,title', 'question:id,title'])
+            ->where('user_id', $userId)
+            ->paginate($limit);
     }
 }
